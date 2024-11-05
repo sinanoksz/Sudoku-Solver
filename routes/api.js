@@ -32,27 +32,29 @@ module.exports = function (app) {
       const col = parseInt(coordinate[1]) - 1;
       const solver = new SudokuSolver();
 
-      // If the value is already in that position
+      // If value is already placed
       if (puzzle[row * 9 + col] === value) {
         return res.json({ valid: true });
       }
 
-      const conflicts = [];
+      const conflictArray = [];
       
       if (!solver.checkRowPlacement(puzzle, row, col, value)) {
-        conflicts.push('row');
+        conflictArray.push('row');
       }
       if (!solver.checkColPlacement(puzzle, row, col, value)) {
-        conflicts.push('column');
+        conflictArray.push('column');
       }
       if (!solver.checkRegionPlacement(puzzle, row, col, value)) {
-        conflicts.push('region');
+        conflictArray.push('region');
       }
 
-      if (conflicts.length > 0) {
+      // Return both singular and plural properties
+      if (conflictArray.length > 0) {
         return res.json({
           valid: false,
-          conflicts: conflicts
+          conflict: conflictArray,
+          conflicts: conflictArray
         });
       }
 
